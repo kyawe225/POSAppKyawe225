@@ -8,7 +8,13 @@ use Exception;
 use Hash;
 use Log;
 
-interface IProductRepository
+interface IProductRepository extends ICrudRepository {}
+
+class ProductRepository implements IProductRepository
 {
-    function register(array $register);
+    public function create(array $request) {}
+    public function update(int $id, array $array) {}
+    public function delete(int $id) {}
+    public function all() {}
+    public function get(int $id) {}
 }

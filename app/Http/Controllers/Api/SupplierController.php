@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Repository\ICuponRepository;
-use App\Http\Requests\Cupon\CuponCreateRequest;
-use App\Http\Requests\Cupon\CuponUpdateRequest;
+use App\Http\Repository\ISupplierRepository;
+use App\Http\Requests\Supplier\SupplierCreateRequest;
+use App\Http\Requests\Supplier\SupplierUpdateRequest;
 use Illuminate\Http\Request;
 
-class CuponController extends Controller
+class SupplierController extends Controller
 {
-    public function __construct(protected readonly ICuponRepository $repository)
+    public function __construct(protected readonly ISupplierRepository $repository)
     {
 
     }
@@ -27,14 +27,14 @@ class CuponController extends Controller
         return response()->json($data);
     }
 
-    public function insert(CuponCreateRequest $request)
+    public function insert(SupplierCreateRequest $request)
     {
         $validated = $request->validated();
         $response = $this->repository->create($validated);
         return response()->json($response);
     }
 
-    public function update(int $id, CuponUpdateRequest $request)
+    public function update(int $id, SupplierUpdateRequest $request)
     {
         $validated = $request->validated();
         $response = $this->repository->update($id, $validated);
