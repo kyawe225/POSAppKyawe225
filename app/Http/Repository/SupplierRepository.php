@@ -72,12 +72,12 @@ class SupplierRepository implements ISupplierRepository
     public function all()
     {
         try {
-            $supplier = Supplier::all();
+            $supplier = Supplier::orderByDesc("created_at")->get();
             if ($supplier == null) {
                 return ResponseModel::fail("", "");
             }
 
-            return ResponseModel::Ok("", "");
+            return ResponseModel::Ok("", $supplier);
         } catch (Exception $e) {
             Log::error("SupplierRepository.all => ${$e->getMessage()}");
             return ResponseModel::fail("", "");
@@ -91,7 +91,7 @@ class SupplierRepository implements ISupplierRepository
                 return ResponseModel::fail("", "");
             }
 
-            return ResponseModel::Ok("", "");
+            return ResponseModel::Ok("", $supplier);
         } catch (Exception $e) {
             Log::error("SupplierRepository.get => ${$e->getMessage()}");
             return ResponseModel::fail("", "");

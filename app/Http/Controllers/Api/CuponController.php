@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Repository\ICuponRepository;
 use App\Http\Requests\Cupon\CuponCreateRequest;
 use App\Http\Requests\Cupon\CuponUpdateRequest;
-use Illuminate\Http\Request;
 
 class CuponController extends Controller
 {

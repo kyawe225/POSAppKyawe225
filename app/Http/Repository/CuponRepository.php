@@ -80,7 +80,7 @@ class CuponRepository implements ICuponRepository
                 return ResponseModel::fail("", "");
             }
 
-            return ResponseModel::Ok("", "");
+            return ResponseModel::Ok("", $productCategories);
         } catch (Exception $e) {
             Log::error("ProductCategoryRepository.all => ${$e->getMessage()}");
             return ResponseModel::fail("", "");
@@ -94,7 +94,7 @@ class CuponRepository implements ICuponRepository
                 return ResponseModel::fail("", "");
             }
 
-            return ResponseModel::Ok("", "");
+            return ResponseModel::Ok("", $productCategory);
         } catch (Exception $e) {
             Log::error("ProductCategoryRepository.get => ${$e->getMessage()}");
             return ResponseModel::fail("", "");

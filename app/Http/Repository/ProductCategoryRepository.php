@@ -69,12 +69,12 @@ class ProductCategoryRepository implements IProductCategoryRepository
     public function all()
     {
         try {
-            $productCategories = ProductCategory::all();
+            $productCategories = ProductCategory::orderByDesc("created_at")->get();
             if ($productCategories == null) {
                 return ResponseModel::fail("", "");
             }
 
-            return ResponseModel::Ok("", "");
+            return ResponseModel::Ok("", $productCategories);
         } catch (Exception $e) {
             Log::error("ProductCategoryRepository.all => ${$e->getMessage()}");
             return ResponseModel::fail("", "");
@@ -88,10 +88,10 @@ class ProductCategoryRepository implements IProductCategoryRepository
                 return ResponseModel::fail("", "");
             }
 
-            return ResponseModel::Ok("", "");
+            return ResponseModel::Ok("", $productCategory);
         } catch (Exception $e) {
             Log::error("ProductCategoryRepository.get => ${$e->getMessage()}");
-            return ResponseModel::fail("", "");
+            return ResponseModel::fail("", $productCategory);
         }
     }
 }

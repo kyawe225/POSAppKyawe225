@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Repository\IPaymentRepository;
+use App\Http\Requests\Cupon\CuponCreateRequest;
+use App\Http\Requests\Cupon\CuponUpdateRequest;
 
-class PaymentMethodController extends Controller
+class PaymentController extends Controller
 {
-    public function __construct(protected readonly ICuponRepository $repository)
+    public function __construct(protected readonly IPaymentRepository $repository)
     {
 
     }
