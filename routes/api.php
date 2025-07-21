@@ -58,7 +58,7 @@ Route::group(["prefix" => "/product-category", "as" => "pc."], function ($reques
         ->put("{id}", [ProductCategoryController::class, "update"])
         ->name("detial");
     $request
-        ->post("create", [ProductCategoryController::class, "insert"])
+        ->post("", [ProductCategoryController::class, "insert"])
         ->name("create");
     $request
         ->delete("delete/{id}", [ProductCategoryController::class, "delete"])
@@ -77,7 +77,7 @@ Route::group(["prefix" => "/cupon", "as" => "cu."], function ($request) {
         ->put("{id}", [CuponController::class, "update"])
         ->name("detial");
     $request
-        ->post("create", [CuponController::class, "insert"])
+        ->post("", [CuponController::class, "insert"])
         ->name("create");
     $request
         ->delete("delete/{id}", [CuponController::class, "delete"])
