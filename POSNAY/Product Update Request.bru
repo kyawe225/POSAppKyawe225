@@ -1,0 +1,28 @@
+meta {
+  name: Product Update Request
+  type: http
+  seq: 18
+}
+
+put {
+  url: http://localhost:8000/api/product/1
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Wireless Bluetooth Headphones",
+    "sku":"sku_01982dd3-7b42-73c5-a41b-6ec956186a42",
+    "description": "High-quality wireless headphones with noise cancellation and 20-hour battery life",
+    "category_id": 2,
+    "default_supplier_id": 3,
+    "price": "129.99",
+    "cost": "85.50",
+    "reorder_point": 10,
+    "image_url": "https://example.com/images/headphones.jpg",
+    "attribute": "{\"Color\" : \"yellow\"}",
+    "attribute_type": "{\"Color\":\"string\"}",
+    "status":"inactive"
+  }
+}

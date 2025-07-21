@@ -5,6 +5,7 @@ namespace App\Http\Repository;
 use App\Http\ViewModel\ResponseModel;
 use App\Models\Product;
 use App\Models\User;
+use Arr;
 use Carbon\Carbon;
 use DB;
 use Exception;
@@ -28,6 +29,7 @@ class ProductRepository implements IProductRepository
         }
         $request['status'] = "inactive";
         $request['sku'] = "sku_" . Str::uuid7();
+        $request["attribute"]=json_encode(json_decode($request["attribute"]));
         $supplier = Product::create($request);
         $inserted = $supplier->save();
         if (!$inserted) {
@@ -37,7 +39,7 @@ class ProductRepository implements IProductRepository
     }
     public function update(int $id, array $request)
     {
-        $exists = Product::where("name", $request["name"])
+        $exists = Product::where("name", $request["name"])->where("id","!=",$id)
             ->exists();
         if ($exists) {
             return ResponseModel::fail("", ""); // some kind of myanmar or english text.
@@ -47,7 +49,7 @@ class ProductRepository implements IProductRepository
             return ResponseModel::fail("", "");
         }
         
-        $updated = $product->update($request);
+        $updated = $product->update(Arr::except($request,"sku"));
         if (!$updated) {
             return ResponseModel::fail("", "");
         }

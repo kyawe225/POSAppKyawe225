@@ -30,7 +30,7 @@ class ProductUpdateRequest extends FormRequest
             "cost"=>"required|decimal:2",
             "reorder_point"=>"required|integer",
             "image_url"=>"required|string",
-            "attribute"=>"required|string",
+            "attribute"=>"required|json",
             "attribute_type"=>"required|string",
             "sku"=>"required|string",
             "status"=>"required|string|in:active,inactive"

@@ -1,0 +1,26 @@
+meta {
+  name: Product Create Request copy
+  type: http
+  seq: 19
+}
+
+post {
+  url: http://localhost:8000/api/product
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Wireless Bluetooth Headphones",
+    "description": "High-quality wireless headphones with noise cancellation and 20-hour battery life",
+    "category_id": 2,
+    "default_supplier_id": 3,
+    "price": "129.99",
+    "cost": "85.50",
+    "reorder_point": 10,
+    "image_url": "https://example.com/images/headphones.jpg",
+    "attribute": "{\"Color\" : \"red\"}",
+    "attribute_type": "{\"Color\":\"string\"}"
+  }
+}
