@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->string("name", 225);
             $table->string("description", 225);
-            $table->unsignedBigInteger("parent_category_id");
+            $table->unsignedBigInteger("parent_category_id")->nullable();
             $table
                 ->foreign("parent_category_id")
                 ->references("id")

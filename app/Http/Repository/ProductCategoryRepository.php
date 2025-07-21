@@ -5,6 +5,7 @@ namespace App\Http\Repository;
 use App\Http\ViewModel\ResponseModel;
 use App\Models\ProductCategory;
 use App\Models\User;
+use DB;
 use Exception;
 use Hash;
 use Log;

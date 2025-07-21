@@ -4,6 +4,7 @@ namespace App\Http\Repository;
 use App\Models\CuponUsageRecord;
 use App\Models\PromoCupon;
 use Arr;
+use Carbon\Carbon;
 use Exception;
 use App\Models\Payment;
 use Str;
@@ -27,6 +28,16 @@ class PaymentRepository implements IPaymentRepository
                 $cupon_usage = [];
                 $cupon = PromoCupon::where("cupon_code", $request['cupon_code'])->orWhere("cupon_code", $request['cupon_code'])->first();
                 if ($cupon != null) {
+                    if($cupon->minimum_purchase_amount < $request['amount']){
+                        return ResponseModel::fail("","");
+                    }
+                    if(Carbon::now('utc') >= $cupon->valid_from &&   Carbon::now("utc") <= $cupon->valid_until){
+                        return ResponseModel::fail("","");
+                    }
+                    if($cupon->usage_limit < $cupon->usage_count){
+                        $cupon->usage_count++;
+                        return ResponseModel::fail("","");
+                    }
                     $total_discount = $cupon->discount_type == "percentage" ? $request["amount"] * ($cupon->discount_value / 100) : $cupon->discount_value;
                     $cupon_usage = [
                         "cupon_id" => $cupon->id,
@@ -46,7 +57,7 @@ class PaymentRepository implements IPaymentRepository
             $payment->payment_status = "completed";
             $payment->payment_date = Carbon::now('UTC');
             $pay = Payment::create($payment);
-
+            $cupon->save();
             $success = $pay->save();
             if (count($cupon_usage) != 0) {
                 $model = CuponUsageRecord::create($cupon_usage);
