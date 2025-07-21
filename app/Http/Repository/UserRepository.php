@@ -4,13 +4,17 @@ namespace App\Http\Repository;
 
 use App\Http\ViewModel\ResponseModel;
 use App\Models\User;
+use Auth;
+use Carbon\Carbon;
 use Exception;
 use Hash;
 use Log;
+use Str;
 
 interface IUserRepository
 {
     function register(array $register);
+    function login(array $register);
 }
 
 class UserRepository implements IUserRepository
@@ -31,6 +35,37 @@ class UserRepository implements IUserRepository
                 return ResponseModel::Ok(
                     __("success_message.user_register_message"),
                     "",
+                );
+            }
+            return ResponseModel::Ok(
+                __("error_message.user_register_message"),
+                "",
+            );
+        } catch (Exception $e) {
+            Log::error("UserRepository->register => " . $e->getMessage());
+            return ResponseModel::Ok(
+                __("error_message.user_register_message"),
+                "",
+            );
+        }
+    }
+
+    public function login(array $register)
+    {
+        try {
+            $user = User::where("email", $register["email"])->first();
+            if($user == null){
+                return ResponseModel::Ok(
+                    __("error_message.user_not_found"),
+                    "",
+                );
+            }
+            
+            if (Hash::check($register['password'],$user->password)) {
+                $token = $user->createToken(Str::uuid7().$user->name, expiresAt: Carbon::now("utc")->addMinutes(30));
+                return ResponseModel::Ok(
+                    __("success_message.user_login_message",["name"=>$user->name]),
+                    $token->plainTextToken,
                 );
             }
             return ResponseModel::Ok(

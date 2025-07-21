@@ -18,6 +18,10 @@ Route::group(["prefix" => "/auth", "as" => "auth."], function ($request) {
     $request
         ->post("register", [UserController::class, "register"])
         ->name("register");
+
+    $request
+        ->post("login", [UserController::class, "login"])
+        ->name("login");
 });
 
 // Route::group(["prefix" => "/payment_method", "as" => "pm."], function ($request) {

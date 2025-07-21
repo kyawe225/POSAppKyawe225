@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Repository\IUserRepository;
+use App\Http\Requests\User\LoginRequest;
 use App\Http\Requests\User\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -17,6 +18,12 @@ class UserController extends Controller
     {
         $validated = $request->validated();
         $response = $this->repository->register($validated);
+        return response()->json($response);
+    }
+
+    public function login(LoginRequest $request){
+        $validated = $request->validated();
+        $response = $this->repository->login($validated);
         return response()->json($response);
     }
 }
