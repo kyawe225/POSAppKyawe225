@@ -1,0 +1,26 @@
+meta {
+  name: product Category Delete Request
+  type: http
+  seq: 17
+}
+
+delete {
+  url: http://localhost:8000/api/supplier/delete/2
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name":"panasonic",
+    "contact_person":"zoe lay",
+    "email":"kyawzinhtet@gmail.co",
+    "phone":"09254489334",
+    "address":"somewhere",
+    "city":"yangon",
+    "state":"yangon",
+    "postal_code":"10260",
+    "country":"myanmar",
+    "status":"inactive"
+  }
+}

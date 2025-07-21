@@ -1,0 +1,26 @@
+meta {
+  name: Cupon Delete Request
+  type: http
+  seq: 5
+}
+
+delete {
+  url: http://localhost:8000/api/cupon/delete/2
+  body: none
+  auth: inherit
+}
+
+body:json {
+  {
+    "cupon_code": "SUMMER2025",
+    "description": "Summer discount for all products",
+    "discount_value": "15.00",
+    "discount_type": "percentage",
+    "maximum_discount_amount": "300.00",
+    "minimum_purchase_amount": "50.00",
+    "valid_from": "2025-07-20T00:00:00Z",
+    "valid_until": "2025-08-31T23:59:59Z",
+    "usage_limit": 100,
+    "usage_count": 0
+  }
+}

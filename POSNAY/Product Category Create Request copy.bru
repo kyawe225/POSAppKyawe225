@@ -1,0 +1,18 @@
+meta {
+  name: Product Category Create Request copy
+  type: http
+  seq: 13
+}
+
+post {
+  url: http://localhost:8000/api/product-category
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name":"fresh goods",
+    "description":"It contains all fresh dairy meat and fishes."
+  }
+}

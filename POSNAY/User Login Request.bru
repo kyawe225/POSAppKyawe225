@@ -1,18 +1,17 @@
 meta {
   name: User Login Request
   type: http
-  seq: 4
+  seq: 1
 }
 
 post {
-  url: http://localhost:8000/api/auth/register
+  url: http://localhost:8000/api/auth/login
   body: json
   auth: inherit
 }
 
 body:json {
   {
-    "name":"kyaw zin htet",
     "email":"kyawzinhtet@gmail.com",
     "password": "helloWorld"
   }
