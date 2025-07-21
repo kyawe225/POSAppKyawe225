@@ -1,8 +1,12 @@
 <?php
 namespace App\Http\Repository;
 
+use App\Models\CuponUsageRecord;
+use App\Models\PromoCupon;
+use Arr;
 use Exception;
 use App\Models\Payment;
+use Str;
 
 interface IPaymentRepository extends ICrudRepository
 {
@@ -18,9 +22,48 @@ class PaymentRepository implements IPaymentRepository
     // will do later
     public function create(array $request)
     {
-        $payment = Arr::except($request,"cupon_code");
-        $pay= Payment::create($payment);
-        return $pay;
+        try {
+            if (array_key_exists('cupon_code', $request)) {
+                $cupon_usage = [];
+                $cupon = PromoCupon::where("cupon_code", $request['cupon_code'])->orWhere("cupon_code", $request['cupon_code'])->first();
+                if ($cupon != null) {
+                    $total_discount = $cupon->discount_type == "percentage" ? $request["amount"] * ($cupon->discount_value / 100) : $cupon->discount_value;
+                    $cupon_usage = [
+                        "cupon_id" => $cupon->id,
+                        "order_id" => $request["order_id"],
+                        "cms_user_id" => $request["cms_user_id"],
+                        "customer_id" => Str::uuid7(),
+                        "usage_date" => Carbon::now('UTC'),
+                        "discount_value" => $cupon->discount_value,
+                        "discount_type" => $cupon->discount_type
+                    ];
+                    $request['amount'] -= $total_discount;
+                }
+            }
+            DB::beginTransaction();
+            $payment = Arr::except($request, "cupon_code");
+            $payment->transaction_id = "tran_" . Str::uuid7();
+            $payment->payment_status = "completed";
+            $payment->payment_date = Carbon::now('UTC');
+            $pay = Payment::create($payment);
+
+            $success = $pay->save();
+            if (count($cupon_usage) != 0) {
+                $model = CuponUsageRecord::create($cupon_usage);
+                $model->save();
+            }
+            DB::commit();
+            if (!$success) {
+                return ResponseModel::fail("", "");
+            }
+            Log::info("PaymentRepository.create => Saved payment successfully!");
+            return ResponseModel::Ok("", "");
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error("PaymentRepository.create => ${$e->getMessage()}");
+            return ResponseModel::fail("", "");
+        }
+
     }
     // for now no update for this payment because customer will pay from cashier
     public function update(int $id, array $request)
