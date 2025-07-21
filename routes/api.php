@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\CuponController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\ProductCategoryController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\SupplierController;
@@ -102,7 +103,7 @@ Route::group(["prefix" => "/product", "as" => "p."], function ($request) {
         ->put("{id}", [ProductController::class, "update"])
         ->name("detial");
     $request
-        ->post("create", [ProductController::class, "insert"])
+        ->post("", [ProductController::class, "insert"])
         ->name("create");
     $request
         ->delete("delete/{id}", [ProductController::class, "delete"])
@@ -120,9 +121,27 @@ Route::group(["prefix" => "/order", "as" => "o."], function ($request) {
         ->put("{id}", [OrderController::class, "update"])
         ->name("detial");
     $request
-        ->post("create", [OrderController::class, "insert"])
+        ->post("", [OrderController::class, "insert"])
         ->name("create");
     $request
         ->delete("delete/{id}", [OrderController::class, "delete"])
+        ->name("delete");
+});
+
+Route::group(["prefix" => "/payment", "as" => "pt."], function ($request) {
+    $request
+        ->get("all", [PaymentController::class, "index"])
+        ->name("all");
+    $request
+        ->get("detail/{id}", [PaymentController::class, "getDetail"])
+        ->name("detial");
+    $request
+        ->put("{id}", [PaymentController::class, "update"])
+        ->name("detial");
+    $request
+        ->post("", [PaymentController::class, "insert"])
+        ->name("create");
+    $request
+        ->delete("delete/{id}", [PaymentController::class, "delete"])
         ->name("delete");
 });
