@@ -31,13 +31,13 @@ return new class extends Migration {
                 ->on("product")
                 ->cascadeOnDelete();
 
-            $table->unsignedBigInteger("number_of_items");
+            $table->BigInteger("number_of_items");
             $table->enum("transaction_type", [
                 "purchase",
                 "sale",
-                "return",
-                "adjustment",
-                "damage",
+                "return", // this will be add to the product database. this happen because customer don't like product.
+                "adjustment",  // customer exchnage one bad and other. this status will be used.
+                "damage", // when damage this will not be readded to product database back. it is used in refund sitatuation.
             ]);
             $table->timestampTz("transaction_date");
             $table->unsignedBigInteger("current_stock");
