@@ -32,8 +32,8 @@ return new class extends Migration {
             $table->decimal("cost", 20, 2);
             $table->integer("reorder_point")->default(0);
             $table->string("image_url", 225);
-            $table->json("attribute");
-            $table->json("attribute_type");
+            $table->json("attribute")->nullable();
+            $table->json("attribute_type")->nullable();
             $table->enum("status", ["active", "inactive"]);
             $table->timestampsTz();
         });

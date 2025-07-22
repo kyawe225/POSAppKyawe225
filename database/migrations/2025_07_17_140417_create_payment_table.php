@@ -24,7 +24,7 @@ return new class extends Migration {
                 "refunded",
             ]);
             $table->timestampTz("payment_date");
-            $table->json("gateway_response");
+            $table->json("gateway_response")->nullable();
             $table->string("gateway_provider");
             $table
                 ->foreign("order_id")

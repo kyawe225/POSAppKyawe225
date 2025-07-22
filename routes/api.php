@@ -15,7 +15,7 @@ Route::get("/user", function (Request $request) {
     return $request->user();
 })->middleware("auth:sanctum");
 
-Route::group(["prefix" => "/auth", "as" => "auth."], function ($request) {
+Route::group(["prefix" => "/auth", "as" => "auth.","middleware"=>"auth:sanctum"], function ($request) {
     $request
         ->post("register", [UserController::class, "register"])
         ->name("register");
@@ -30,7 +30,7 @@ Route::group(["prefix" => "/auth", "as" => "auth."], function ($request) {
 //         ->get("register", [UserController::class, "register"])
 //         ->name("register");
 // });
-Route::group(["prefix" => "/supplier", "as" => "sp."], function ($request) {
+Route::group(["prefix" => "/supplier", "as" => "sp.","middleware"=>"auth:sanctum"], function ($request) {
     $request
         ->get("all", [SupplierController::class, "index"])
         ->name("all");
@@ -48,7 +48,7 @@ Route::group(["prefix" => "/supplier", "as" => "sp."], function ($request) {
         ->name("delete");
 });
 
-Route::group(["prefix" => "/product-category", "as" => "pc."], function ($request) {
+Route::group(["prefix" => "/product-category", "as" => "pc.","middleware"=>"auth:sanctum"], function ($request) {
     $request
         ->get("all", [ProductCategoryController::class, "index"])
         ->name("all");
@@ -67,7 +67,7 @@ Route::group(["prefix" => "/product-category", "as" => "pc."], function ($reques
 });
 
 
-Route::group(["prefix" => "/cupon", "as" => "cu."], function ($request) {
+Route::group(["prefix" => "/cupon", "as" => "cu.","middleware"=>"auth:sanctum"], function ($request) {
     $request
         ->get("all", [CuponController::class, "index"])
         ->name("all");
@@ -83,10 +83,13 @@ Route::group(["prefix" => "/cupon", "as" => "cu."], function ($request) {
     $request
         ->delete("delete/{id}", [CuponController::class, "delete"])
         ->name("delete");
+    $request
+        ->post("check", [CuponController::class, "check"])
+        ->name("delete");
 });
 
 
-Route::group(["prefix" => "/product", "as" => "p."], function ($request) {
+Route::group(["prefix" => "/product", "as" => "p.","middleware"=>"auth:sanctum"], function ($request) {
     $request
         ->get("all", [ProductController::class, "index"])
         ->name("all");
@@ -110,7 +113,7 @@ Route::group(["prefix" => "/product", "as" => "p."], function ($request) {
         ->name("delete");
 });
 
-Route::group(["prefix" => "/order", "as" => "o."], function ($request) {
+Route::group(["prefix" => "/order", "as" => "o.","middleware"=>"auth:sanctum"], function ($request) {
     $request
         ->get("all", [OrderController::class, "index"])
         ->name("all");
@@ -128,7 +131,7 @@ Route::group(["prefix" => "/order", "as" => "o."], function ($request) {
         ->name("delete");
 });
 
-Route::group(["prefix" => "/payment", "as" => "pt."], function ($request) {
+Route::group(["prefix" => "/payment", "as" => "pt.","middleware"=>"auth:sanctum"], function ($request) {
     $request
         ->get("all", [PaymentController::class, "index"])
         ->name("all");

@@ -13,6 +13,7 @@ use Str;
 
 interface ICuponRepository extends ICrudRepository
 {
+    function check(string $cupon_code,float $subtotal);
 }
 
 class CuponRepository implements ICuponRepository
@@ -115,6 +116,29 @@ class CuponRepository implements ICuponRepository
             }
 
             return ResponseModel::Ok("", $promoCupon);
+        } catch (Exception $e) {
+            Log::error("ProductCategoryRepository.get => ${$e->getMessage()}");
+            return ResponseModel::fail("", "");
+        }
+    }
+
+    public function check(string $cupon_code,$subtotal)
+    {
+        try {
+            $cupon = PromoCupon::where("cupon_code", $cupon_code)->orWhere("cupon_code", $cupon_code)->first();
+            if ($cupon != null) {
+                if ($cupon->minimum_purchase_amount < $subtotal) {
+                    return ResponseModel::fail("", "");
+                }
+                if (Carbon::now('utc') >= $cupon->valid_from && Carbon::now("utc") <= $cupon->valid_until) {
+                    return ResponseModel::fail("", "");
+                }
+                if ($cupon->usage_limit < $cupon->usage_count) {
+                    return ResponseModel::fail("", "");
+                }
+
+                return ResponseModel::Ok("", $cupon);
+            }
         } catch (Exception $e) {
             Log::error("ProductCategoryRepository.get => ${$e->getMessage()}");
             return ResponseModel::fail("", "");

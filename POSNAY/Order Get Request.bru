@@ -1,0 +1,27 @@
+meta {
+  name: Order Get Request
+  type: http
+  seq: 25
+}
+
+get {
+  url: http://localhost:8000/api/order/all
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "cms_user_id": 1,
+    "subtotal": "150.50",
+    "tax_amount": "15.05",
+    "notes": "Please deliver after 5 PM",
+    "order_items": [
+      {
+        "product_id": 2,
+        "quantity": 2,
+        "unit_price": "50.00"
+      }
+    ]
+  }
+}

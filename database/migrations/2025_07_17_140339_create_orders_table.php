@@ -24,9 +24,9 @@ return new class extends Migration {
                 "cancelled",
                 "refunded",
             ]);
-            $table->decimal("subtotal", 30, 2);
-            $table->decimal("tax_amount", 30, 2);
-            $table->decimal("discount_amount", 30, 2);
+            $table->decimal("subtotal", 30, 2)->default(0);
+            $table->decimal("tax_amount", 30, 2)->default(0);
+            $table->decimal("discount_amount", 30, 2)->nullable()->default(0);
             $table->text("notes");
             $table->foreign("cms_user_id")->references("id")->on("users");
             $table->timestampsTz();

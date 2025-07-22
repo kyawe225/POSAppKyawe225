@@ -45,4 +45,15 @@ class CuponController extends Controller
         $response = $this->repository->delete($id);
         return response()->json($response);
     }
+
+    public function check(){
+        $validated= request()->validate([
+            "cupon_code"=>"required|string",
+            "subtotal"=> "required|decimal:2"
+        ]);
+        $cupon_code = request()->input("cupon_code");
+        $subtotal = request()->input("subtotal");
+        $response = $this->repository->check($cupon_code,$subtotal);
+        return response()->json($response);
+    }
 }

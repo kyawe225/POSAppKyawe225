@@ -21,6 +21,12 @@ return new class extends Migration {
                 ->references("id")
                 ->on("orders")
                 ->cascadeOnDelete();
+
+            $table
+                ->foreign("product_id")
+                ->references("id")
+                ->on("product")
+                ->cascadeOnDelete();
             $table->timestampsTz();
         });
     }
