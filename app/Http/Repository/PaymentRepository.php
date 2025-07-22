@@ -1,12 +1,15 @@
 <?php
 namespace App\Http\Repository;
 
+use App\Http\ViewModel\ResponseModel;
 use App\Models\CuponUsageRecord;
 use App\Models\PromoCupon;
 use Arr;
 use Carbon\Carbon;
+use DB;
 use Exception;
 use App\Models\Payment;
+use Log;
 use Str;
 
 interface IPaymentRepository extends ICrudRepository
@@ -24,45 +27,21 @@ class PaymentRepository implements IPaymentRepository
     public function create(array $request)
     {
         try {
-            if (array_key_exists('cupon_code', $request)) {
-                $cupon_usage = [];
-                $cupon = PromoCupon::where("cupon_code", $request['cupon_code'])->orWhere("cupon_code", $request['cupon_code'])->first();
-                if ($cupon != null) {
-                    if($cupon->minimum_purchase_amount < $request['amount']){
-                        return ResponseModel::fail("","");
-                    }
-                    if(Carbon::now('utc') >= $cupon->valid_from &&   Carbon::now("utc") <= $cupon->valid_until){
-                        return ResponseModel::fail("","");
-                    }
-                    if($cupon->usage_limit < $cupon->usage_count){
-                        $cupon->usage_count++;
-                        return ResponseModel::fail("","");
-                    }
-                    $total_discount = $cupon->discount_type == "percentage" ? $request["amount"] * ($cupon->discount_value / 100) : $cupon->discount_value;
-                    $cupon_usage = [
-                        "cupon_id" => $cupon->id,
-                        "order_id" => $request["order_id"],
-                        "cms_user_id" => $request["cms_user_id"],
-                        "customer_id" => Str::uuid7(),
-                        "usage_date" => Carbon::now('UTC'),
-                        "discount_value" => $cupon->discount_value,
-                        "discount_type" => $cupon->discount_type
-                    ];
-                    $request['amount'] -= $total_discount;
-                }
-            }
             DB::beginTransaction();
-            $payment = Arr::except($request, "cupon_code");
-            $payment->transaction_id = "tran_" . Str::uuid7();
-            $payment->payment_status = "completed";
-            $payment->payment_date = Carbon::now('UTC');
-            $pay = Payment::create($payment);
-            $cupon->save();
-            $success = $pay->save();
-            if (count($cupon_usage) != 0) {
-                $model = CuponUsageRecord::create($cupon_usage);
-                $model->save();
+            $response = $this->cuponUsage($request);
+
+            if($response == "NG"){
+                return $response;
             }
+
+            $payment = Arr::except($request, "cupon_code");
+            $payment['transaction_id'] = "tran_" . Str::uuid7();
+            $payment['payment_status'] = "completed";
+            $payment['payment_date'] = Carbon::now('UTC');
+            $pay = Payment::create($payment);
+
+            $success = $pay->save();
+
             DB::commit();
             if (!$success) {
                 return ResponseModel::fail("", "");
@@ -75,6 +54,43 @@ class PaymentRepository implements IPaymentRepository
             return ResponseModel::fail("", "");
         }
 
+    }
+
+    private function cuponUsage(&$request)
+    {
+        if (array_key_exists('cupon_code', $request)) {
+            $cupon_usage = [];
+            $cupon = PromoCupon::where("cupon_code", $request['cupon_code'])->orWhere("cupon_code", $request['cupon_code'])->first();
+            if ($cupon != null) {
+                if ($cupon->minimum_purchase_amount < $request['amount']) {
+                    return ResponseModel::fail("", "");
+                }
+                if (Carbon::now('utc') >= $cupon->valid_from && Carbon::now("utc") <= $cupon->valid_until) {
+                    return ResponseModel::fail("", "");
+                }
+                if ($cupon->usage_limit < $cupon->usage_count) {
+                    $cupon->usage_count++;
+                    return ResponseModel::fail("", "");
+                }
+                $total_discount = $cupon->discount_type == "percentage" ? $request["amount"] * ($cupon->discount_value / 100) : $cupon->discount_value;
+                $cupon_usage = [
+                    "cupon_id" => $cupon->id,
+                    "order_id" => $request["order_id"],
+                    "cms_user_id" => $request["cms_user_id"],
+                    "customer_id" => Str::uuid7(),
+                    "usage_date" => Carbon::now('UTC'),
+                    "discount_value" => $cupon->discount_value,
+                    "discount_type" => $cupon->discount_type
+                ];
+                $request['amount'] -= $total_discount;
+                $cupon->save();
+                if (count($cupon_usage) != 0) {
+                    $model = CuponUsageRecord::create($cupon_usage);
+                    $model->save();
+                }
+            }
+        }
+        return ResponseModel::Ok("","");
     }
     // for now no update for this payment because customer will pay from cashier
     public function update(int $id, array $request)

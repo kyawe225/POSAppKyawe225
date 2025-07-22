@@ -23,11 +23,11 @@ class PaymentCreateRequest extends FormRequest
     {
         return [
             "order_id"=>"required|integer|exists:orders,id",
-            "payment_method"=>"required|integer|exists:payment_methods,id",
+            "payment_method_id"=>"required|integer|exists:payment_methods,id",
             "amount"=>"required|decimal:2",
             "payment_date"=>"required|date",
             "gateway_provider"=>"required|string",
-            "cupon_code"=>"required|string"
+            "cupon_code"=>"nullable|string"
         ];
     }
 }

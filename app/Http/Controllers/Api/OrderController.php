@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Repository\IOrderRepository;
 use App\Http\Requests\Cupon\CuponCreateRequest;
 use App\Http\Requests\Cupon\CuponUpdateRequest;
+use App\Http\Requests\Order\OrderCreateRequest;
+use App\Http\Requests\Order\OrderUpdateRequest;
 class OrderController extends Controller
 {
     public function __construct(protected readonly IOrderRepository $repository)
@@ -25,14 +27,14 @@ class OrderController extends Controller
         return response()->json($data);
     }
 
-    public function insert(CuponCreateRequest $request)
+    public function insert(OrderCreateRequest $request)
     {
         $validated = $request->validated();
         $response = $this->repository->create($validated);
         return response()->json($response);
     }
 
-    public function update(int $id, CuponUpdateRequest $request)
+    public function update(int $id, OrderUpdateRequest $request)
     {
         $validated = $request->validated();
         $response = $this->repository->update($id, $validated);

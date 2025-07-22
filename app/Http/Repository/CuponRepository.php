@@ -24,16 +24,16 @@ class CuponRepository implements ICuponRepository
         if ($exists) {
             return ResponseModel::fail("", ""); // some kind of myanmar or english text.
         }
-        
+
         $request['cupon_qr_barcode'] = Str::random(5) . Str::uuid();
-        $request["valid_from"]= Carbon::parse($request["valid_from"],'utc');
-        $request["valid_until"]= Carbon::parse($request["valid_until"],'utc');
-        if($request["valid_from"]>Carbon::now("utc")){
-            $request["status"]="scheduled";
-        } else if($request['valid_from']->date() == Carbon::now("utc")->date()){
-            $request['status']='active';
-        } else if($request['valid_from']->date() < Carbon::now("utc")->date() || $request['valid_from'] > $request["valid_until"]){
-            return ResponseModel::fail("","");
+        $request["valid_from"] = Carbon::parse($request["valid_from"], 'utc');
+        $request["valid_until"] = Carbon::parse($request["valid_until"], 'utc');
+        if ($request["valid_from"] > Carbon::now("utc")) {
+            $request["status"] = "scheduled";
+        } else if ($request['valid_from']->date() == Carbon::now("utc")->date()) {
+            $request['status'] = 'active';
+        } else if ($request['valid_from']->date() < Carbon::now("utc")->date() || $request['valid_from'] > $request["valid_until"]) {
+            return ResponseModel::fail("", "");
         }
         $supplier = PromoCupon::create($request);
         $inserted = $supplier->save();
@@ -44,7 +44,7 @@ class CuponRepository implements ICuponRepository
     }
     public function update(int $id, array $request)
     {
-        $exists = PromoCupon::where("cupon_code", $request["cupon_code"])->where("id","<>",$id)
+        $exists = PromoCupon::where("cupon_code", $request["cupon_code"])->where("id", "<>", $id)
             ->exists();
         if ($exists) {
             return ResponseModel::fail("", ""); // some kind of myanmar or english text.
@@ -53,8 +53,8 @@ class CuponRepository implements ICuponRepository
         if ($productCategory == null) {
             return ResponseModel::fail("", "");
         }
-        $request["valid_from"]= Carbon::parse($request["valid_from"],'utc');
-        $request["valid_until"]= Carbon::parse($request["valid_until"],'utc');
+        $request["valid_from"] = Carbon::parse($request["valid_from"], 'utc');
+        $request["valid_until"] = Carbon::parse($request["valid_until"], 'utc');
         $updated = $productCategory->update($request);
         if (!$updated) {
             return ResponseModel::fail("", "");
@@ -64,9 +64,9 @@ class CuponRepository implements ICuponRepository
     public function delete(int $id)
     {
         try {
-            $exists = CuponUsageRecord::where("cupon_id",$id)->exists();
-            if($exists){
-                return ResponseModel::fail("","");
+            $exists = CuponUsageRecord::where("cupon_id", $id)->exists();
+            if ($exists) {
+                return ResponseModel::fail("", "");
             }
             $productCategory = PromoCupon::where("id", $id)->first();
             if ($productCategory == null) {
@@ -87,7 +87,12 @@ class CuponRepository implements ICuponRepository
     public function all()
     {
         try {
-            $productCategories = PromoCupon::all();
+            $productCategories = PromoCupon::all()->map(function ($p) {
+                if ($p->valid_until < Carbon::now("utc")) {
+                    $p->status = "expired";
+                }
+                return $p;
+            });
             if ($productCategories == null) {
                 return ResponseModel::fail("", "");
             }
@@ -101,12 +106,15 @@ class CuponRepository implements ICuponRepository
     public function get(int $id)
     {
         try {
-            $productCategory = PromoCupon::where("id", $id)->first();
-            if ($productCategory == null) {
+            $promoCupon = PromoCupon::where("id", $id)->first();
+            if ($promoCupon == null) {
                 return ResponseModel::fail("", "");
             }
+            if ($promoCupon->valid_until < Carbon::now("utc")) {
+                $promoCupon->status = "expired";
+            }
 
-            return ResponseModel::Ok("", $productCategory);
+            return ResponseModel::Ok("", $promoCupon);
         } catch (Exception $e) {
             Log::error("ProductCategoryRepository.get => ${$e->getMessage()}");
             return ResponseModel::fail("", "");

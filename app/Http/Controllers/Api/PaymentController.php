@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Repository\IPaymentRepository;
 use App\Http\Requests\Cupon\CuponCreateRequest;
 use App\Http\Requests\Cupon\CuponUpdateRequest;
+use App\Http\Requests\Payment\PaymentCreateRequest;
 
 class PaymentController extends Controller
 {
@@ -26,17 +27,10 @@ class PaymentController extends Controller
         return response()->json($data);
     }
 
-    public function insert(CuponCreateRequest $request)
+    public function insert(PaymentCreateRequest $request)
     {
         $validated = $request->validated();
         $response = $this->repository->create($validated);
-        return response()->json($response);
-    }
-
-    public function update(int $id, CuponUpdateRequest $request)
-    {
-        $validated = $request->validated();
-        $response = $this->repository->update($id, $validated);
         return response()->json($response);
     }
 
