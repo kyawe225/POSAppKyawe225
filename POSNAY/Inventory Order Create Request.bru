@@ -1,0 +1,22 @@
+meta {
+  name: Inventory Order Create Request
+  type: http
+  seq: 28
+}
+
+post {
+  url: http://localhost:8000/api/inventory-order
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "product_id": 2,
+    "supplier_id": 1,
+    "order_date": "2025-07-24",
+    "total_amount": "11",
+    "notes": "Urgent order for Q3 inventory replenishment"
+  }
+  
+}

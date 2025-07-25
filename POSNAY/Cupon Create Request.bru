@@ -1,18 +1,18 @@
 meta {
-  name: Product Delete Request
+  name: Cupon Create Request
   type: http
-  seq: 24
+  seq: 4
 }
 
-delete {
-  url: http://localhost:8000/api/product/delete/1
-  body: none
+post {
+  url: http://localhost:8000/api/cupon
+  body: json
   auth: inherit
 }
 
 body:json {
   {
-    "cupon_code": "SUMMER2025",
+    "cupon_code": "SUMMER2026",
     "description": "Summer discount for all products",
     "discount_value": "15.00",
     "discount_type": "percentage",

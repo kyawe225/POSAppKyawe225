@@ -1,7 +1,7 @@
 meta {
-  name: Product Create Request copy
+  name: Product Create Request
   type: http
-  seq: 21
+  seq: 19
 }
 
 post {
@@ -13,14 +13,15 @@ post {
 body:json {
   {
     "name": "Wireless Bluetooth Headphones",
+    "sku":"sku_01982dd3-7b42-73c5-a41b-6ec956186a42",
     "description": "High-quality wireless headphones with noise cancellation and 20-hour battery life",
-    "category_id": 2,
-    "default_supplier_id": 3,
+    "category_id": 1,
+    "default_supplier_id":1,
     "price": "129.99",
     "cost": "85.50",
     "reorder_point": 10,
     "image_url": "https://example.com/images/headphones.jpg",
-    "attribute": "{\"Color\" : \"red\"}",
+    "attribute": "{\"Color\" : \"yellow\"}",
     "attribute_type": "{\"Color\":\"string\"}"
   }
 }
