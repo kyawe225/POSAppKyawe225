@@ -16,6 +16,8 @@ use Str;
 interface IProductRepository extends ICrudRepository {
     function filterByCategory(int $categoryId);
     function filterByCategoryPagination(int $categoryId);
+    // this is method for admin view
+    function getDetail(int $id);
 }
 
 class ProductRepository implements IProductRepository
@@ -92,7 +94,22 @@ class ProductRepository implements IProductRepository
     public function get(int $id)
     {
         try {
-            $product = Product::where("id", $id)->first();
+            $product = Product::where("id", $id)->with(["category","supplier.name"])->first();
+            if ($product == null) {
+                return ResponseModel::fail("", "");
+            }
+
+            return ResponseModel::Ok("", $product);
+        } catch (Exception $e) {
+            Log::error("ProductRepository.get => ${$e->getMessage()}");
+            return ResponseModel::fail("", "");
+        }
+    }
+
+    public function getDetail(int $id)
+    {
+        try {
+            $product = Product::where("id", $id)->with(["category","supplier","inventory_order","inventory_log"])->first();
             if ($product == null) {
                 return ResponseModel::fail("", "");
             }

@@ -26,6 +26,12 @@ class ProductController extends Controller
         return response()->json($data);
     }
 
+    public function getDetailAdmin(int $id)
+    {
+        $data = $this->repository->getDetail($id);
+        return response()->json($data);
+    }
+
     public function getByCategory(int $id)
     {
         $data = $this->repository->filterByCategory($id);

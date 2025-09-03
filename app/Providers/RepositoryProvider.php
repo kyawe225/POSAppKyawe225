@@ -16,11 +16,11 @@ use App\Http\Repository\ProductCategoryRepository;
 use App\Http\Repository\ProductRepository;
 use App\Http\Repository\SupplierRepository;
 use App\Http\Repository\UserRepository;
-use IInventoryLogRepository;
-use IInventoryOrderRepository;
+use App\Http\Repository\IInventoryOrderRepository;
+use App\Http\Repository\InventoryOrderRepository;
+
 use Illuminate\Support\ServiceProvider;
-use InventoryLogRepository;
-use InventoryOrderRepository;
+
 
 class RepositoryProvider extends ServiceProvider
 {

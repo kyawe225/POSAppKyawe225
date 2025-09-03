@@ -29,11 +29,11 @@ class CuponRepository implements ICuponRepository
         $request['cupon_qr_barcode'] = Str::random(5) . Str::uuid();
         $request["valid_from"] = Carbon::parse($request["valid_from"], 'utc');
         $request["valid_until"] = Carbon::parse($request["valid_until"], 'utc');
-        if ($request["valid_from"] > Carbon::now("utc")) {
+        if ($request["valid_from"] > Carbon::now("utc") && $request['valid_until']->startOfDay() > Carbon::now("utc")->startOfDay()) {
             $request["status"] = "scheduled";
-        } else if ($request['valid_from']->date() == Carbon::now("utc")->date()) {
+        } else if ($request['valid_from']->startOfDay() == Carbon::now("utc")->startOfDay()) {
             $request['status'] = 'active';
-        } else if ($request['valid_from']->date() < Carbon::now("utc")->date() || $request['valid_from'] > $request["valid_until"]) {
+        } else if ($request['valid_until']->startOfDay() < Carbon::now("utc")->startOfDay() || $request['valid_from'] > $request["valid_until"]) {
             return ResponseModel::fail("", "");
         }
         $supplier = PromoCupon::create($request);
@@ -56,6 +56,15 @@ class CuponRepository implements ICuponRepository
         }
         $request["valid_from"] = Carbon::parse($request["valid_from"], 'utc');
         $request["valid_until"] = Carbon::parse($request["valid_until"], 'utc');
+
+        if ($request["valid_from"] > Carbon::now("utc") && $request['valid_until']->startOfDay() > Carbon::now("utc")->startOfDay()) {
+            $request["status"] = "scheduled";
+        } else if ($request['valid_from']->startOfDay() == Carbon::now("utc")->startOfDay()) {
+            $request['status'] = 'active';
+        } else if ($request['valid_until']->startOfDay() < Carbon::now("utc")->startOfDay() || $request['valid_from'] > $request["valid_until"]) {
+            return ResponseModel::fail("", "");
+        }
+
         $updated = $productCategory->update($request);
         if (!$updated) {
             return ResponseModel::fail("", "");

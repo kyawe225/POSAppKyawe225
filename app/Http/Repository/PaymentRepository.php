@@ -152,7 +152,7 @@ class PaymentRepository implements IPaymentRepository
     public function get(int $id)
     {
         try {
-            $supplier = Payment::where("id", $id)->first();
+            $supplier = Payment::where("id", $id)->with("payment_methods")->first();
             if ($supplier == null) {
                 return ResponseModel::fail("", "");
             }

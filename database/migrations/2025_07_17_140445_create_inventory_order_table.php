@@ -13,14 +13,19 @@ return new class extends Migration {
         Schema::create("inventory_order", function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("supplier_id");
+            $table->unsignedBigInteger("product_id");
+            $table
+                ->foreign("product_id")
+                ->references("id")
+                ->on("product")
+                ->cascadeOnDelete();
             $table
                 ->foreign("supplier_id")
                 ->references("id")
                 ->on("provider")
                 ->cascadeOnDelete();
             $table->date("order_date");
-            $table->date("excepted_delivery_date");
-            $table->timestampTz("actual_delivery_date");
+            $table->timestampTz("actual_delivery_date")->nullable();
             $table->unsignedBigInteger("total_amount");
             $table->enum("status", [
                 "pending",

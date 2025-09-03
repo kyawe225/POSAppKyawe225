@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('inventory_order', function (Blueprint $table) {
-            $table->unsignedBigInteger("expected_quantity");
-            $table->unsignedBigInteger("actual_quantity");
-            $table->unsignedBigInteger("damage_quantity");
+            $table->unsignedBigInteger("expected_quantity")->nullable();
+            $table->unsignedBigInteger("actual_quantity")->nullable();
+            $table->unsignedBigInteger("damage_quantity")->nullable();
 
         });
     }
